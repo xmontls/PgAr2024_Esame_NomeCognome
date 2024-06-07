@@ -167,6 +167,7 @@ public class Partita {
     		mazzo.aggiungiCarte(carteScartate);
             mazzo.mescola();
             System.out.println("Il mazzo è stato rimescolato con le carte scartate!");
+            carteScartate.clear();
         }
     	
     	int scelta = 0;
@@ -179,7 +180,7 @@ public class Partita {
                 "Gioca carte"
         };
 
-        MyMenu menu = new MyMenu("Seleziona la difficolta della partita", SCELTE);
+        MyMenu menu = new MyMenu("Che azione vuoi fare? ", SCELTE);
         int count = 0;
         do {
         	System.out.println();
@@ -208,7 +209,7 @@ public class Partita {
                 	System.out.println("I tuoi PF attuali sono: " + giocatore.getPF());
                 	break;
                 case 5:
-                	giocaCarte(giocatore, count, giocatori, rinneUltimo);
+                	giocaCarte(giocatore, count, giocatori, rinneUltimo, carteScartate);
                 	break;
                 case 6:
                 	provocaAvversario(giocatore, giocatori);
@@ -229,10 +230,10 @@ public class Partita {
     			System.out.println(g.getNome() + " non ci ha capito una mazza, ma ora è molto irritato e "
     					+ "ce l'avrà a morte con te!!");
     	}
-    	
+    	System.out.println();
     }
     
-    public static void giocaCarte(Giocatore g, int count, ArrayList<Giocatore> giocatori, boolean rinneUltimo) {
+    public static void giocaCarte(Giocatore g, int count, ArrayList<Giocatore> giocatori, boolean rinneUltimo, ArrayList<Carta> carteScartate) {
     	printCarte(g);
     	System.out.println("Puoi giocare solo 1 carta BANG! per turno e"
     		    + " puoi avere in gioco solo 1 arma.");
@@ -250,6 +251,7 @@ public class Partita {
 		        g.setCarteEquipaggiate(new ArrayList<>());
 		        g.getCarteEquipaggiate().add(cartaDaGiocare);
 		        System.out.println("La carta è stata equipaggiata con successo! E' stata inoltre rimossa la carta equipaggiata in precedenza.");
+		        carteScartate.add(cartaPrecedente);
 		        // scarta la carta sostituita
 		        g.rimuoviCarta(cartaPrecedente);
 		    }
@@ -268,8 +270,9 @@ public class Partita {
     				if(d == 1) {
     					System.out.println(g.getNome() + " ha sparato a " + bersaglio.getNome());
     					System.out.println("Chiamiamo urgentemente il giocatore " + bersaglio.getNome() + "!!");
-    					controlloCartaMancato(bersaglio);
-    					
+    					controlloCartaMancato(bersaglio, carteScartate);
+    					carteScartate.add(cartaDaGiocare);
+    			        g.rimuoviCarta(cartaDaGiocare);
     					rinneUltimo = controlloEliminazione(bersaglio, giocatori);
     				} else if(d == 0) {
     					System.out.println("Questo giocatore sei tu..");
@@ -281,7 +284,9 @@ public class Partita {
     					    if (d == 1 || distanzaArma >= d) {
     					    	System.out.println(g.getNome() + " ha sparato a " + bersaglio.getNome());
     	    					System.out.println("Chiamiamo urgentemente il giocatore " + bersaglio.getNome() + "!!");
-    	    					controlloCartaMancato(bersaglio);
+    	    					controlloCartaMancato(bersaglio, carteScartate);
+    	    					carteScartate.add(cartaDaGiocare);
+    	    			        g.rimuoviCarta(cartaDaGiocare);
     	    					rinneUltimo =  controlloEliminazione(bersaglio, giocatori);
     					    } else {
     					        System.out.println("Non hai equipaggiato un'arma adatta allo scontro..");
@@ -297,15 +302,16 @@ public class Partita {
     			count++;
     		}
     	}
-    	scartaCarte(g);
+    	scartaCarte(g, carteScartate);
     }
     
-    public static void controlloCartaMancato(Giocatore g) {
+    public static void controlloCartaMancato(Giocatore g, ArrayList<Carta> carteScartate) {
         List<Carta> carteInMano = g.getCarte();
         for (Carta carta : carteInMano) {
             if (carta.getNome().equals("Mancato")) {
                 System.out.println("Il giocatore ha una carta Mancato e può usarla per evitare un attacco!");
                 // Rimuovi la carta Mancato dalle carte del giocatore
+                carteScartate.add(carta);
                 g.rimuoviCarta(carta);
             } else {
             	System.out.println("Il giocatore non ha la carta Mancato e subirà l'attacco.");
@@ -329,7 +335,7 @@ public class Partita {
     	return rinneUltimo;
     }
     
-    public static void scartaCarte(Giocatore g) {
+    public static void scartaCarte(Giocatore g, ArrayList<Carta> carteScartate) {
         int numeroCarte = g.getCarte().size(); // Ottieni il numero di carte del giocatore
         if (g.getRuolo().equals("Sceriffo")) {
             if (numeroCarte > 5) {
@@ -338,6 +344,7 @@ public class Partita {
                 System.out.println("Seleziona l'indice della carta da scartare: ");
                 int indice = InputDati.leggiIntero("Indice: ", 0, numeroCarte - 1);
                 Carta cartaDaRimuovere = g.getCarte().get(indice);
+                carteScartate.add(cartaDaRimuovere);
                 g.rimuoviCarta(cartaDaRimuovere); // Rimuovi la carta selezionata
             }
         } else {
@@ -347,6 +354,7 @@ public class Partita {
                 System.out.println("Seleziona l'indice della carta da scartare: ");
                 int indice = InputDati.leggiIntero("Indice: ", 0, numeroCarte - 1);
                 Carta cartaDaRimuovere = g.getCarte().get(indice);
+                carteScartate.add(cartaDaRimuovere);
                 g.rimuoviCarta(cartaDaRimuovere); // Rimuovi la carta selezionata
             }
         }
