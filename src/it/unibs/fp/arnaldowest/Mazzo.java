@@ -13,7 +13,15 @@ public class Mazzo {
         creaMazzo();
     }
 
-    private void creaMazzo() {
+    public boolean vuoto() {
+        return mazzo.isEmpty();
+    }
+    
+    public void aggiungiCarte(ArrayList<Carta> nuoveCarte) {
+        mazzo.addAll(nuoveCarte);
+    }
+    
+    public void creaMazzo() {
         // Aggiungi 74 carte GiocaScarta, 50 bang e 24 mancato
         for (int i = 0; i < 50; i++) {
             GiocaScarta cartaGiocaScarta = new GiocaScarta("GiocaScarta", "BANG!");

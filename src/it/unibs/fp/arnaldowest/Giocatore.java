@@ -9,8 +9,19 @@ public class Giocatore {
     private List<Carta> carteEquipaggiate;
     private int PF;
     private int distanza;
+    private String nome;
 
-    public Giocatore(String ruolo, int pF, int distanza) {
+    public String getNome() {
+		return nome;
+	}
+
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+
+	public Giocatore(String ruolo, int pF, int distanza) {
         this.ruolo = ruolo;
         this.PF = pF;
         this.distanza = distanza;
@@ -63,7 +74,21 @@ public class Giocatore {
 	@Override
 	public String toString() {
 		return "Giocatore [ruolo=" + ruolo + ", carte=" + carte + ", carteEquipaggiate=" + carteEquipaggiate + ", PF="
-				+ PF + ", distanza=" + distanza + "]";
-	} 
+				+ PF + ", distanza=" + distanza + ", nome=" + nome + "]";
+	}
+
+	public void aggiungiCarte(List<Carta> carte) {
+	    this.carte.addAll(carte);
+	}
+	
+	public void scartaTutteLeCarte() {
+	    carte.clear();
+	    carteEquipaggiate.clear();
+	}
+
+	public void rimuoviCarta(Carta carta) {
+	    carte.remove(carta);
+	}
+	
 }
 

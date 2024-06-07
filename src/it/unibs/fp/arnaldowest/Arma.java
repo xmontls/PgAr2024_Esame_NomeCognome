@@ -2,6 +2,11 @@ package it.unibs.fp.arnaldowest;
 
 public class Arma extends Carta{
 	
+	@Override
+	public String toString() {
+		return "Arma [distanza=" + distanza + ", nome=" + nome + "]";
+	}
+
 	private int distanza;
 	private String nome;
 	

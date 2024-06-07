@@ -10,6 +10,7 @@ public class ArnaldoWestMain {
     public static void main(String[] args) {
 
         System.out.println("Benvenuti nell'ArnaldoWest!");
+        System.out.println();
         System.out.println("Iniziamo una nuova partita!");
         int numGiocatori = InputDati.leggiIntero("Quanti giocatori vogliono partecipare alla partita? ", 4, 7);
 
@@ -40,34 +41,40 @@ public class ArnaldoWestMain {
             case 4:
                 giocatori.add(new Giocatore(ruoli.get(0), 4, 1));
                 giocatori.add(new Giocatore(ruoli.get(1), 4, 2));
-                giocatori.add(new Giocatore(ruoli.get(2), 4, 1));
+                giocatori.add(new Giocatore(ruoli.get(2), 4, -1));
                 break;
             case 5:
                 giocatori.add(new Giocatore(ruoli.get(0), 4, 1));
                 giocatori.add(new Giocatore(ruoli.get(1), 4, 2));
-                giocatori.add(new Giocatore(ruoli.get(2), 4, 2));
-                giocatori.add(new Giocatore(ruoli.get(3), 4, 1));
+                giocatori.add(new Giocatore(ruoli.get(2), 4, -2));
+                giocatori.add(new Giocatore(ruoli.get(3), 4, -1));
                 break;
             case 6:
                 giocatori.add(new Giocatore(ruoli.get(0), 4, 1));
                 giocatori.add(new Giocatore(ruoli.get(1), 4, 2));
                 giocatori.add(new Giocatore(ruoli.get(2), 4, 3));
-                giocatori.add(new Giocatore(ruoli.get(3), 4, 2));
-                giocatori.add(new Giocatore(ruoli.get(4), 4, 1));
+                giocatori.add(new Giocatore(ruoli.get(3), 4, -2));
+                giocatori.add(new Giocatore(ruoli.get(4), 4, -1));
                 break;
             case 7:
                 giocatori.add(new Giocatore(ruoli.get(0), 4, 1));
                 giocatori.add(new Giocatore(ruoli.get(1), 4, 2));
                 giocatori.add(new Giocatore(ruoli.get(2), 4, 3));
-                giocatori.add(new Giocatore(ruoli.get(3), 4, 3));
-                giocatori.add(new Giocatore(ruoli.get(4), 4, 2));
-                giocatori.add(new Giocatore(ruoli.get(5), 4, 1));
+                giocatori.add(new Giocatore(ruoli.get(3), 4, -3));
+                giocatori.add(new Giocatore(ruoli.get(4), 4, -2));
+                giocatori.add(new Giocatore(ruoli.get(5), 4, -1));
                 break;
         }
 
         // Avvio della partita
         Partita.iniziaScontro(giocatori);
 
-        // Dichiarazione del risultato (da implementare)
+        // Dichiarazione del risultato 
+        if(Partita.isSceriffoPresente(giocatori) == true) {
+        	System.out.println("Vincono la partita lo Sceriffo e i suoi Vice!!");
+        } else if(Partita.areFuorileggiPresenti(giocatori) == true)
+        	System.out.println("Vincono la partita i Fuorilegge, che restano ancora in circolazione!!");
+        else
+        	System.out.println("Vince la partita il Rinnegato, che diventa il nuovo Sceriffo in città!!");
     }
 }
