@@ -10,8 +10,30 @@ public class Giocatore {
     private int PF;
     private int distanza;
     private String nome;
+    private int sbleuri;
+    private double punteggio;
 
-    public String getNome() {
+    public double getPunteggio() {
+		return punteggio;
+	}
+
+
+	public void setPunteggio(double punteggio) {
+		this.punteggio = punteggio;
+	}
+
+
+	public int getSbleuri() {
+		return sbleuri;
+	}
+
+
+	public void setSbleuri(int sbleuri) {
+		this.sbleuri = sbleuri;
+	}
+
+
+	public String getNome() {
 		return nome;
 	}
 
@@ -70,13 +92,6 @@ public class Giocatore {
 		this.carteEquipaggiate = carteEquipaggiate;
 	}
 
-
-	@Override
-	public String toString() {
-		return "Giocatore [ruolo=" + ruolo + ", carte=" + carte + ", carteEquipaggiate=" + carteEquipaggiate + ", PF="
-				+ PF + ", distanza=" + distanza + ", nome=" + nome + "]";
-	}
-
 	public void aggiungiCarte(List<Carta> carte) {
 	    this.carte.addAll(carte);
 	}
@@ -89,6 +104,19 @@ public class Giocatore {
 	public void rimuoviCarta(Carta carta) {
 	    carte.remove(carta);
 	}
+
+
+	@Override
+	public String toString() {
+		return "Giocatore [ruolo=" + ruolo + ", carte=" + carte + ", carteEquipaggiate=" + carteEquipaggiate + ", PF="
+				+ PF + ", distanza=" + distanza + ", nome=" + nome + ", §=" + sbleuri + "]";
+	}
+	
+	public String printGiocatore() {
+		return "Giocatore [nome = " + nome + ", ex-ruolo " + ruolo + ", sbleuri(§)=" + sbleuri + "]";
+	}
+	
+	
 	
 }
 

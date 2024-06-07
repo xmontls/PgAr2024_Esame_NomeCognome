@@ -1,6 +1,7 @@
 package it.unibs.fp.arnaldowest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.unibs.fp.mylib.InputDati;
@@ -87,6 +88,16 @@ public class Partita {
         return false;
     }
 
+    public static boolean areFuorileggiPresentiWORinnegato(ArrayList<Giocatore> giocatori) {
+        for (Giocatore giocatore : giocatori) {
+            String ruolo = giocatore.getRuolo();
+            if (ruolo.equals("Fuorilegge")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public static boolean areFuorileggiPresenti(ArrayList<Giocatore> giocatori) {
         for (Giocatore giocatore : giocatori) {
             String ruolo = giocatore.getRuolo();
@@ -111,7 +122,15 @@ public class Partita {
         }
     }
 
-    public static void iniziaScontro(ArrayList<Giocatore> giocatori) {
+    public static boolean iniziaScontro(ArrayList<Giocatore> giocatori, boolean torneo, int countP) {
+    	if(torneo == false)
+    		Collections.shuffle(giocatori);
+    	else {
+    		if(countP == 0) 
+    			Collections.shuffle(giocatori); // se è la prima partita del torneo, è utile, altrimenti no, perche 
+    											// i ruoli varierebbero e i punteggi sarbbero sbagliati
+    	}
+    	boolean rinneUltimo = false; // servirà per assicurarsi se il rinnegato è l ultimo a morire
     	ArrayList<Carta> carteScartate = new ArrayList<Carta>();
         rivelaRuoli(giocatori);
         Mazzo mazzo = new Mazzo();
@@ -120,6 +139,8 @@ public class Partita {
 
         // Pesca carte per ogni giocatore in base ai suoi PF
         for (Giocatore giocatore : giocatori) {
+        	if(torneo == true)
+        		giocatore.setSbleuri(giocatore.getSbleuri() - 50);
             List<Carta> carteGiocatore = mazzo.pescaCarteCasuali(giocatore.getPF());
             giocatore.setCarte(carteGiocatore);
         }
@@ -130,14 +151,15 @@ public class Partita {
         do {
         	for (Giocatore giocatore : giocatori) {
         		System.out.println("Turno di " + giocatore.getNome());
-                turno(giocatore, giocatori, mazzo, carteScartate); // turno per ciascun giocatore
+                turno(giocatore, giocatori, mazzo, carteScartate, rinneUltimo); // turno per ciascun giocatore
             }
             sceriffoPresente = isSceriffoPresente(giocatori);
             fuorileggiPresenti = areFuorileggiPresenti(giocatori);
         } while (sceriffoPresente && fuorileggiPresenti);
+        return rinneUltimo;
     }
     
-    public static void turno(Giocatore giocatore, ArrayList<Giocatore> giocatori, Mazzo mazzo, ArrayList<Carta> carteScartate) {
+    public static void turno(Giocatore giocatore, ArrayList<Giocatore> giocatori, Mazzo mazzo, ArrayList<Carta> carteScartate, boolean rinneUltimo) {
     	System.out.println();
     	System.out.println("Inizia col pescare 2 carte! ");
     	giocatore.aggiungiCarte(mazzo.pescaCarteCasuali(2));
@@ -185,14 +207,14 @@ public class Partita {
                 	System.out.println("I tuoi PF attuali sono: " + giocatore.getPF());
                 	break;
                 case 5:
-                	giocaCarte(giocatore, count, giocatori);
+                	giocaCarte(giocatore, count, giocatori, rinneUltimo);
                 default:
                     return;
             }
         }while(scelta != 0);
     }
     
-    public static void giocaCarte(Giocatore g, int count, ArrayList<Giocatore> giocatori) {
+    public static void giocaCarte(Giocatore g, int count, ArrayList<Giocatore> giocatori, boolean rinneUltimo) {
     	printCarte(g);
     	System.out.println("Puoi giocare solo 1 carta BANG! per turno e"
     		    + " puoi avere in gioco solo 1 arma.");
@@ -228,7 +250,7 @@ public class Partita {
     				if(d == 1) {
     					System.out.println(g.getNome() + " ha sparato a " + bersaglio.getNome() + "!! Questi subisce un anno di -1 PF!");
     					bersaglio.setPF(bersaglio.getPF() - 1);
-    					controlloEliminazione(bersaglio, giocatori);
+    					rinneUltimo = controlloEliminazione(bersaglio, giocatori);
     				} else if(d == 0) {
     					System.out.println("Questo giocatore sei tu..");
     				} else {
@@ -257,13 +279,17 @@ public class Partita {
     	scartaCarte(g);
     }
     
-    public static void controlloEliminazione(Giocatore g, ArrayList<Giocatore> giocatori) {
+    public static boolean controlloEliminazione(Giocatore g, ArrayList<Giocatore> giocatori) {
+    	boolean rinneUltimo = false;
     	System.out.println();
     	if(g.getPF() == 0) {
     		System.out.println("Il giocatore " + g.getNome() + " è stato eliminato!!");
     		System.out.println(g.getNome() + " era un " + g.getRuolo());
     		giocatori.remove(g);
+    		if(g.getRuolo().equals("Rinnegato") && (areFuorileggiPresentiWORinnegato(giocatori) == false))
+    			rinneUltimo = true;
     	}
+    	return rinneUltimo;
     }
     
     public static void scartaCarte(Giocatore g) {
