@@ -17,4 +17,5 @@
 - [ ] Modulo 2: Per un pugno di carte
 - [x] Modulo 3: Classifica
 - [ ] Modulo 4: Saloon
+- [x] Modulo 5: Taunt
 
