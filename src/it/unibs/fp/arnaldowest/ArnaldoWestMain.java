@@ -8,7 +8,7 @@ import java.util.Collections;
 public class ArnaldoWestMain {
 
     public static void main(String[] args) {
-
+    	
         System.out.println("Benvenuti nell'ArnaldoWest!");
         System.out.println();
         String partita = InputDati.leggiStringaNonVuota("Vuoi giocare in modaità torneo?(si/no)").toLowerCase();

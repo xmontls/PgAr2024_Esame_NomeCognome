@@ -175,6 +175,7 @@ public class Partita {
                 "Che carte possiedo?(in mano/equipaggiate)",
                 "Trova distanza da un altro giocatore",
                 "Trova i miei punti attuali",
+                "Provoca avversario",
                 "Gioca carte"
         };
 
@@ -208,10 +209,27 @@ public class Partita {
                 	break;
                 case 5:
                 	giocaCarte(giocatore, count, giocatori, rinneUltimo);
+                	break;
+                case 6:
+                	provocaAvversario(giocatore, giocatori);
+                	break;
                 default:
                     return;
             }
         }while(scelta != 0);
+    }
+    
+    public static void provocaAvversario(Giocatore giocatore, ArrayList<Giocatore> giocatori) {
+    	String provocazione = InputDati.leggiStringaNonVuota("Quale sarebbe la sua provocazione? Che verrà appuratamente legga in Brixiano? ");
+    	String nome = InputDati.leggiStringaNonVuota("Hah! Chi vorresti provocare? ");
+    	for(Giocatore g: giocatori) {
+    		if(nome.equals(g.getNome()))
+    			System.out.println("Giocatore " + g.getNome() + "!! " + giocatore.getNome() + "ti sta provocando!!");
+    			System.out.println("Ecco il messaggio rimortato!! " + LeggiBrixiano.encrypted(provocazione));
+    			System.out.println(g.getNome() + " non ci ha capito una mazza, ma ora è molto irritato e "
+    					+ "ce l'avrà a morte con te!!");
+    	}
+    	
     }
     
     public static void giocaCarte(Giocatore g, int count, ArrayList<Giocatore> giocatori, boolean rinneUltimo) {
@@ -248,8 +266,10 @@ public class Partita {
     				}
     				int d = findDistanza(bersaglio, g);
     				if(d == 1) {
-    					System.out.println(g.getNome() + " ha sparato a " + bersaglio.getNome() + "!! Questi subisce un anno di -1 PF!");
-    					bersaglio.setPF(bersaglio.getPF() - 1);
+    					System.out.println(g.getNome() + " ha sparato a " + bersaglio.getNome());
+    					System.out.println("Chiamiamo urgentemente il giocatore " + bersaglio.getNome() + "!!");
+    					controlloCartaMancato(bersaglio);
+    					
     					rinneUltimo = controlloEliminazione(bersaglio, giocatori);
     				} else if(d == 0) {
     					System.out.println("Questo giocatore sei tu..");
@@ -259,9 +279,10 @@ public class Partita {
     					    int distanzaArma = cartaEquipaggiata.getDistanza(); // Ottieni la distanza dell'arma
 
     					    if (d == 1 || distanzaArma >= d) {
-    					        System.out.println(g.getNome() + " ha sparato a " + bersaglio.getNome() + "!! Questi subisce un anno di -1 PF!");
-    					        bersaglio.setPF(bersaglio.getPF() - 1);
-    					        controlloEliminazione(bersaglio, giocatori);
+    					    	System.out.println(g.getNome() + " ha sparato a " + bersaglio.getNome());
+    	    					System.out.println("Chiamiamo urgentemente il giocatore " + bersaglio.getNome() + "!!");
+    	    					controlloCartaMancato(bersaglio);
+    	    					rinneUltimo =  controlloEliminazione(bersaglio, giocatori);
     					    } else {
     					        System.out.println("Non hai equipaggiato un'arma adatta allo scontro..");
     					    }
@@ -278,6 +299,22 @@ public class Partita {
     	}
     	scartaCarte(g);
     }
+    
+    public static void controlloCartaMancato(Giocatore g) {
+        List<Carta> carteInMano = g.getCarte();
+        for (Carta carta : carteInMano) {
+            if (carta.getNome().equals("Mancato")) {
+                System.out.println("Il giocatore ha una carta Mancato e può usarla per evitare un attacco!");
+                // Rimuovi la carta Mancato dalle carte del giocatore
+                g.rimuoviCarta(carta);
+            } else {
+            	System.out.println("Il giocatore non ha la carta Mancato e subirà l'attacco.");
+				g.setPF(g.getPF() - 1);
+            }
+        }
+        System.out.println();
+    }
+
     
     public static boolean controlloEliminazione(Giocatore g, ArrayList<Giocatore> giocatori) {
     	boolean rinneUltimo = false;
